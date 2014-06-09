@@ -1,4 +1,4 @@
-/home/e303/opensl/NativeActivity2/obj/local/armeabi/objs/android_native_app_glue/android_native_app_glue.o: \
+/home/e303/opensl/NinePoint/obj/local/armeabi/objs/android_native_app_glue/android_native_app_glue.o: \
  /home/e303/下载/android-ndk-r9d/sources/android/native_app_glue/android_native_app_glue.c \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/jni.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/sys/cdefs.h \

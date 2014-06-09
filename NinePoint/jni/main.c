@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <jni.h>
 #include <errno.h>
-
+#include <pthread.h>
 #include <android/sensor.h>
 #include <android/log.h>
 #include <android_native_app_glue.h>
@@ -80,72 +80,86 @@ int oor,oog,oob;
 //lh lhs[LHSIZE];
 //lh * lhsptr[LHSIZE];
 int kind,stopkind;
+int Truning;
 int brushvalue,thisvalue;
+pthread_t pt;
 //int brushbg;
 //int sxmv;
 //int symv;
 //int szmv;
 //int lhtime;
-int testvalue(int value){
-	char tem[9];
-	char tv[16][2]={
-			{1,3},
-			{3,1},
-			{4,6},
-			{6,4},
-			{7,9},
-			{9,7},
-			{1,7},
-			{7,1},
-			{2,8},
-			{8,2},
-			{3,9},
-			{9,3},
-			{1,9},
-			{9,1},
-			{3,7},
-			{7,3}
-	};
-	int i,j,chker;
-	for(i=0;i<10;i++){
-		tem[i]=value%10;
-		value/=10;
-	}
-	//检测是否在0之后有其他数字,要求0必须在所有数字之后
-	chker=0;
-	for(i=0;i<10;i++){
-		if (tem[i]==0) {
-			chker=1;
-		}
-		else {
-			if (chker==1){
-				return 0;
-			}
-		}
-	}
-	//检测相同数字
-	for(i=0;i<10;i++){
-		for(j=0;j<10;j++){
-			if ((j!=i)&&(tem[i]!=0)&&(tem[j]==tem[i])) {return 0;}
-		}
-	}
-	//检测不存在路径
-	for(i=0;i<9;i++){
-		for(j=0;j<16;j++){
-			if ((tem[i]==tv[j][0])&&(tem[i+1]==tv[j][1])) {return 0;}
-		}
-	}
-	return 1;
+char tv[16][3]={
+		{1,3},
+		{3,1},
+		{4,6},
+		{6,4},
+		{7,9},
+		{9,7},
+		{1,7},
+		{7,1},
+		{2,8},
+		{8,2},
+		{3,9},
+		{9,3},
+		{1,9},
+		{9,1},
+		{3,7},
+		{7,3}
+};
+void inittv(){
+    int i;
+    for (i=0;i<16;i++){
+            tv[i][2]=(tv[i][0]+tv[i][1])/2;
+    }
+
 }
-int getkind(){
-	int i,count;
-	for (i=1,count=0;i<=1000000000;i++){
-		if (testvalue(i)) {count++;}
-	}
-	return count;
+int testvalue(int value){
+        char tem[9];
+        int i,j,k,chker;
+        for(i=0;i<10;i++){
+                tem[i]=value%10;
+                value/=10;
+        }
+        //检测是否在0之后有其他数字,要求0必须在所有数字之后
+        chker=0;
+        for(i=0;i<10;i++){
+                if (tem[i]==0) {
+                        chker=1;
+                }
+                else {
+                        if (chker==1){
+
+                                return i-1;
+                        }
+                }
+        }
+        //检测相同数字
+        for(i=0;i<10;i++){
+                for(j=0;j<i;j++){
+                        if ((tem[i]!=0)&&(tem[j]==tem[i])) {return j;}
+                }
+        }
+        //检测不存在路径
+        for(i=0;i<9;i++){
+                for(j=0;j<16;j++){
+                        chker=1;
+                        if ((tem[i]==tv[j][0])&&(tem[i+1]==tv[j][1])) {
+                                for (k=i+1;k<10;k++) {
+                                        if (tem[k]==tv[j][2]){
+                                                chker=0;
+                                                break;
+                                        }
+                                }
+                                if (chker) {return i;}
+                        }
+                }
+        }
+        return -10;
 }
 
+
 static void engine_init_display(struct engine* engine) {
+
 	thetime=STEPS;
 	//lhtime=0;
 	fst=1;
@@ -371,23 +385,58 @@ void initlihua(int w,int h){
  *
  */
 //检测
+int cut(int a,int b){
+        int p=(int)pow(10,b);
+       // LOGE("%d\n",p);
+        return a-a%p+(int)pow(10,b);
+}
+/*
+ int getkind(){
+         int i,count=0,t;
+         for (i=1;i<1000000000;){
+ //              printf("%d\n",i);
+                 t=testvalue(i);
+                 if (t==-10) {
+                         count++;
+                         //printf("%d\n",i);
+                         i++;
+                 }
+                 else {
+                         i=cut(i,t);
+                 //      i++;
+                 }
+                 //LOGE("%d\n",i);
+         }
 
-void makevalue(){
-	 if (brushvalue<1000000000){
-		 if (testvalue(brushvalue)) {
-			 if (stopkind==0) {
-				 kind++;
-			 }
-			 thisvalue=brushvalue;
-		 }
-		 brushvalue++;
-	 }
-	 else {
-		 brushvalue=1;
-		 stopkind=1;
-	 }
-
-
+         return count;
+}
+*/
+void* makevalue(){
+	int t;
+	while (Truning) {
+		if (brushvalue<1000000000){
+			t=testvalue(brushvalue);
+			if (t==-10) {
+				if (stopkind==0) {
+					kind++;
+				}
+				else{
+					usleep(100000);
+				}
+				thisvalue=brushvalue;
+				brushvalue++;
+			}
+			else {
+				brushvalue=cut(brushvalue,t);
+			}
+		}
+		else {
+			brushvalue=1;
+			stopkind=1;
+		}
+	}
+	pthread_exit(NULL);
+	return NULL;
 }
 void brushline(ANativeWindow_Buffer *buffer,int x1,int y1,int x2,int y2,uint8_t red,uint8_t green,uint8_t blue,int width){
 	int i,j,m,f;//m move value f 0横向 1 纵向
@@ -555,6 +604,7 @@ engine_draw_frame(struct engine* engine) {
  */
 static void engine_term_display(struct engine* engine) {
     engine->animating = 0;
+
 }
 
 
@@ -627,8 +677,9 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             //engine_draw_frame(engine);
             break;
         case APP_CMD_DESTROY:
-
-            shutdown();
+        	Truning=0;
+        	pthread_join(pt,NULL);
+        //    shutdown();
             freefont();
         	break;
     }
@@ -675,10 +726,16 @@ void android_main(struct android_app* state) {
 
   //  createEngine();
   //  createAssetAudioPlayer(engine.app->activity->assetManager,"2.mp3");
+    inittv();
 	kind=0;
 	brushvalue=1;
 	stopkind=0;
 	thisvalue=1;
+	Truning=1;
+	pthread_create(&pt, NULL, &makevalue, NULL);
+	//kind=getkind();
+
+	//stopkind=1;
     while (1) {
         // Read all pending events.
         int ident;
@@ -715,7 +772,7 @@ void android_main(struct android_app* state) {
             }
         }
 
-        makevalue();
+        //makevalue();
         if (engine.animating) {
             // Done with events; draw next animation frame.
             //engine.state.angle += .01f;

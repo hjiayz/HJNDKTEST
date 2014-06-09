@@ -36,13 +36,6 @@
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm/errno.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm-generic/errno.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm-generic/errno-base.h \
- /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/sensor.h \
- /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/looper.h \
- /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/log.h \
- /home/e303/下载/android-ndk-r9d/sources/android/native_app_glue/android_native_app_glue.h \
- /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/poll.h \
- /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/linux/poll.h \
- /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm/poll.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/pthread.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/time.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/sys/time.h \
@@ -54,6 +47,13 @@
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm-generic/signal.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm/sigcontext.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/sched.h \
+ /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/sensor.h \
+ /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/looper.h \
+ /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/log.h \
+ /home/e303/下载/android-ndk-r9d/sources/android/native_app_glue/android_native_app_glue.h \
+ /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/poll.h \
+ /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/linux/poll.h \
+ /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm/poll.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/configuration.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/asset_manager.h \
  /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/native_activity.h \
@@ -150,20 +150,6 @@
 
 /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm-generic/errno-base.h:
 
-/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/sensor.h:
-
-/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/looper.h:
-
-/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/log.h:
-
-/home/e303/下载/android-ndk-r9d/sources/android/native_app_glue/android_native_app_glue.h:
-
-/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/poll.h:
-
-/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/linux/poll.h:
-
-/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm/poll.h:
-
 /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/pthread.h:
 
 /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/time.h:
@@ -185,6 +171,20 @@
 /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm/sigcontext.h:
 
 /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/sched.h:
+
+/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/sensor.h:
+
+/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/looper.h:
+
+/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/log.h:
+
+/home/e303/下载/android-ndk-r9d/sources/android/native_app_glue/android_native_app_glue.h:
+
+/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/poll.h:
+
+/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/linux/poll.h:
+
+/home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/asm/poll.h:
 
 /home/e303/下载/android-ndk-r9d/platforms/android-9/arch-arm/usr/include/android/configuration.h:
 
