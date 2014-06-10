@@ -660,6 +660,7 @@ engine_draw_frame(struct engine* engine) {
     //brushlihua(&buffer);
     //LOGE("brushlihuad");
     ANativeWindow_unlockAndPost(engine->app->window);
+    free(wordptr);
 }
 
 /**
