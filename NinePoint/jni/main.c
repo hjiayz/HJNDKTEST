@@ -79,6 +79,7 @@ int oor,oog,oob;
 //int ooor,ooog,ooob;
 //lh lhs[LHSIZE];
 //lh * lhsptr[LHSIZE];
+int pausemakevalue;
 int kind,stopkind;
 int Truning;
 int brushvalue,thisvalue;
@@ -224,7 +225,8 @@ uint16_t brushchar(uint16_t x,uint16_t y,int32_t Achar,uint8_t Asize,ANativeWind
     			//j 文字内偏移 x基准位置 ox新位置
 
     			//LOGE("me");
-    			brushpx( x+j ,y+((Asize-h)/2)+i ,buffer,red,green*j/wt,blue);
+    			brushpx( x+j ,y+((Asize-h)/2)+i ,buffer,red,green,blue);
+    			//brushpx( x+j ,y+((Asize-h)/2)+i ,buffer,red,green*j/wt,blue);
     			//brushpx(((int)((j+x)*((double)thetime/STEPS))+(int)((ox+x)*((double)(STEPS-thetime)/STEPS))),((int)((i+y+(Asize-h))/**(double)thetime/STEPS)*/+(int)((oy+y)*(double)(STEPS-thetime)/STEPS)),buffer,(AFTBitmap.buffer[k]*red/255+(255-AFTBitmap.buffer[k])*oor/255)/1,(AFTBitmap.buffer[k]*green/255+(255-AFTBitmap.buffer[k])*oog/255)/1,(AFTBitmap.buffer[k]*blue/255+(255-AFTBitmap.buffer[k])*oob/255)/1);
     		}
     		k++;
@@ -423,7 +425,11 @@ void* makevalue(){
 				else{
 					usleep(100000);
 				}
+				while (pausemakevalue) {
+					usleep(10000);
+				}
 				thisvalue=brushvalue;
+
 				brushvalue++;
 			}
 			else {
@@ -477,6 +483,31 @@ void brushline(ANativeWindow_Buffer *buffer,int x1,int y1,int x2,int y2,uint8_t 
 		//LOGE("m7");
 	}
 }
+void brushliner(ANativeWindow_Buffer *buffer,int x1,int y1,int x2,int y2,uint8_t red,uint8_t green,uint8_t blue,int width,int r){
+	int rx1,rx2,ry1,ry2,tem;
+	int len=sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+	if (y1<y2) {
+		tem=r/len*(y2-y1);
+		ry1=y1+tem;
+		ry2=y2-tem;
+	}
+	else {
+		tem=r/len*(y1-y2);
+		ry1=y1-tem;
+		ry2=y2+tem;
+	}
+	if (x1<x2) {
+		tem=r/len*(x2-x1);
+		rx1=x1+tem;
+		rx2=x2-tem;
+	}
+	else {
+		tem=r/len*(x1-x2);
+		rx1=x1-tem;
+		rx2=x2+tem;
+	}
+	brushline(buffer,rx1,ry1,rx2,ry2,red,green,blue,width);
+}
 void brushthisvalue(ANativeWindow_Buffer *buffer){
 	//zuobiao list
 	int width=buffer->width;
@@ -488,36 +519,68 @@ void brushthisvalue(ANativeWindow_Buffer *buffer){
 	else {
 		r=height/8;
 	}
+	int fsize=r*3/2,ftop=fsize/2,fleft=fsize/4;
 	int zb[9][2],i;
 	for(i=0;i<9;i++){
 		zb[i][0]=width*(((i*2)%6)+1)/6;
 		zb[i][1]=height*(i/3*2+1)/6;
 		brushcircle(zb[i][0],zb[i][1],r,buffer,0xFF,0xFF,0xFF);
+		brushchar(zb[i][0]-fleft,zb[i][1]-ftop,'1'+i,fsize,buffer,0x88,0x88,0x88);
 	}
 	//LOGE("mc");
-	int tem=thisvalue,tembit,temx,temy;
-	for(i=0;i<9;i++){
-		tembit=tem%10;
-		if (tembit==0) {
-			brushcircle(temx,temy,r/3,buffer,0x0,0x0,0xFF);
-			return;
+	int tem=thisvalue,tembit,temx,temy,j,r2=r/6;
+	for(j=100000000;(tem/j)==0;j/=10);
+	for(i=0;;i++){
+		if (j==0) {
+			brushcircle(temx,temy,r2,buffer,0x0,0x0,0xFF);
+			break;
+		}
+		tembit=tem/j;
+		if (i>1) {
+			brushcircle(temx,temy,r2,buffer,0x0,0xFF,0x0);
+		//	LOGE("ma2");
 		}
 		//LOGE("mt");
 		if (i!=0) {
 
 			//LOGE("mb");
-			brushline(buffer,temx,temy,zb[tembit-1][0],zb[tembit-1][1],0,255,0,5);
-			brushcircle(zb[tembit-1][0],zb[tembit-1][1],r/3,buffer,0x0,0xFF,0x0);
-
-			//LOGE("ma");
+			brushliner(buffer,temx,temy,zb[tembit-1][0],zb[tembit-1][1],0,255,0,5,r2+5);
+			//brushcircle(zb[tembit-1][0],zb[tembit-1][1],r/3,buffer,0x0,0xFF,0x0);
+			//brushchar(zb[tembit-1][0]-4,zb[tembit-1][1]-9,'1'+i,18,buffer,255,255,255);
 		}
-
-		if (i==1){
-			brushcircle(temx,temy,r/3,buffer,0xFF,0x0,0x0);
+		if (i==1) {
+			brushcircle(temx,temy,r2,buffer,0xFF,0x0,0x0);
+		}
+		//if (i==1){
+		//}
+		temx=zb[tembit-1][0];
+		temy=zb[tembit-1][1];
+		tem=tem%j;
+		j/=10;
+	}
+	tem=thisvalue;
+	fsize=r/4;
+	ftop=fsize/2;
+	fleft=fsize/4;
+	for(j=100000000;(tem/j)==0;j/=10);
+	for(i=0;;i++){
+		if (j==0) {
+			brushchar(temx-fleft,temy-ftop,'0'+i,fsize,buffer,0xFF,0x0,0xFF);
+			return;
+		}
+		tembit=tem/j;
+		//LOGI("%d",tem);
+		//LOGI("%d",j);
+		if (i==1) {
+			brushchar(temx-fleft,temy-ftop,'0'+i,fsize,buffer,0x0,0x0,0x0);
+		}
+		if (i>1) {
+			brushchar(temx-fleft,temy-ftop,'0'+i,fsize,buffer,0xFF,0x0,0x0);
 		}
 		temx=zb[tembit-1][0];
 		temy=zb[tembit-1][1];
-		tem/=10;
+		tem=tem%j;
+		j/=10;
 	}
 
 }
@@ -592,7 +655,7 @@ engine_draw_frame(struct engine* engine) {
     	wordptr[j]=wordptr[i]^wordptr[j];
 
     }
-    brushstring((ox*thetime/STEPS)+(ox1*(STEPS-thetime)/STEPS),(oy*thetime/STEPS)+(oy1*(STEPS-thetime)/STEPS),wordptr,50,2,&buffer,255-oor,255-oog,255-oob);
+    brushstring((ox*thetime/STEPS)+(ox1*(STEPS-thetime)/STEPS),(oy*thetime/STEPS)+(oy1*(STEPS-thetime)/STEPS),wordptr,50,2,&buffer,0xFF,0x88,0xFF);
     //LOGE("brushlihua");
     //brushlihua(&buffer);
     //LOGE("brushlihuad");
@@ -616,13 +679,20 @@ static void engine_term_display(struct engine* engine) {
 static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
     struct engine* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+    	if (AMotionEvent_getAction(event)==AMOTION_EVENT_ACTION_UP){
+    		pausemakevalue=0;
+    	}
+    	if (AMotionEvent_getAction(event)==AMOTION_EVENT_ACTION_DOWN){
+    		pausemakevalue=1;
+    	}
         engine->animating = 1;
+        //LOGI("%d",AMotionEvent_getPointerCount(event));
         return 1;
     } else if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
-        LOGI("Key event: action=%d keyCode=%d metaState=0x%x",
-                AKeyEvent_getAction(event),
-                AKeyEvent_getKeyCode(event),
-                AKeyEvent_getMetaState(event));
+//        LOGI("Key event: action=%d keyCode=%d metaState=0x%x",
+//                AKeyEvent_getAction(event),
+//                AKeyEvent_getKeyCode(event),
+//                AKeyEvent_getMetaState(event));
     }
 
     return 0;
@@ -645,6 +715,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             // The window is being shown, get it ready.
             if (engine->app->window != NULL) {
                 engine_init_display(engine);
+                engine->animating=1;
             //    setPlayingAssetAudioPlayer(1);
             }
             break;
@@ -732,6 +803,7 @@ void android_main(struct android_app* state) {
 	stopkind=0;
 	thisvalue=1;
 	Truning=1;
+	pausemakevalue=0;
 	pthread_create(&pt, NULL, &makevalue, NULL);
 	//kind=getkind();
 
@@ -758,9 +830,9 @@ void android_main(struct android_app* state) {
                     ASensorEvent event;
                     while (ASensorEventQueue_getEvents(engine.sensorEventQueue,
                             &event, 1) > 0) {
-                 //       LOGI("accelerometer: x=%f y=%f z=%f",
-                 //               event.acceleration.x, event.acceleration.y,
-                 //               event.acceleration.z);
+//                        LOGI("accelerometer: x=%f y=%f z=%f",
+//                                event.acceleration.x, event.acceleration.y,
+//                                event.acceleration.z);
                     }
                 }
             }
