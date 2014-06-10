@@ -528,7 +528,7 @@ void brushthisvalue(ANativeWindow_Buffer *buffer){
 		brushchar(zb[i][0]-fleft,zb[i][1]-ftop,'1'+i,fsize,buffer,0x88,0x88,0x88);
 	}
 	//LOGE("mc");
-	int tem=thisvalue,tembit,temx,temy,j,r2=r/6;
+	int tem=thisvalue,tembit,temx,temy,j,r2=r/4;
 	for(j=100000000;(tem/j)==0;j/=10);
 	for(i=0;;i++){
 		if (j==0) {
@@ -559,7 +559,7 @@ void brushthisvalue(ANativeWindow_Buffer *buffer){
 		j/=10;
 	}
 	tem=thisvalue;
-	fsize=r/4;
+	fsize=r/2;
 	ftop=fsize/2;
 	fleft=fsize/4;
 	for(j=100000000;(tem/j)==0;j/=10);
